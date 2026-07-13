@@ -1,0 +1,18 @@
+export const colors = {
+  surface: '#fdf9f2',
+  surfaceLow: '#f8f3ed',
+  surfaceCard: 'rgba(253,249,242,0.78)',
+  surfaceWhite: '#fffefa',
+  surfaceHigh: '#ece8e1',
+  timerPrimary: '#006c52',
+  primary: '#006c52',
+  onSurface: '#1c1c18',
+  variant: '#434840',
+  outline: '#73796f',
+  outlineSoft: '#c3c8bd',
+  secondary: '#5f5a7b',
+  secondarySoft: '#dfd8ff',
+  primarySoft: '#caecbc',
+  primaryFixed: '#63fccb',
+  white: '#ffffff',
+};
