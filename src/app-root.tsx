@@ -23,6 +23,7 @@ export function ZhanZhuangApp() {
   const [sessionDuration, setSessionDuration] = useState(45 * 60);
   const [sessionStartedAt, setSessionStartedAt] = useState(new Date());
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const [todayKey, setTodayKey] = useState(() => toDateKey(new Date()));
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -44,7 +45,17 @@ export function ZhanZhuangApp() {
     return () => clearInterval(timer);
   }, [running, screen]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const nextTodayKey = toDateKey(new Date());
+      setTodayKey((current) => (current === nextTodayKey ? current : nextTodayKey));
+    }, 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const totalSeconds = records.reduce((sum, item) => sum + item.duration, 0);
+  const todayRecords = records.filter((record) => record.date === todayKey);
+  const todaySeconds = todayRecords.reduce((sum, item) => sum + item.duration, 0);
   const latestRecord = records[0];
   const selectedRecord = records.find((record) => record.id === selectedRecordId);
 
@@ -104,6 +115,8 @@ export function ZhanZhuangApp() {
           insetsBottom={insets.bottom}
           latestRecord={latestRecord}
           recordsCount={records.length}
+          todayRecordsCount={todayRecords.length}
+          todaySeconds={todaySeconds}
           totalSeconds={totalSeconds}
           onStart={() => setScreen('posture')}
           onSelectTab={setScreen}
@@ -114,6 +127,7 @@ export function ZhanZhuangApp() {
           insetsTop={insets.top}
           insetsBottom={insets.bottom}
           records={records}
+          todayKey={todayKey}
           onOpenRecord={(record) => {
             setSelectedRecordId(record.id);
             setScreen('recordDetail');

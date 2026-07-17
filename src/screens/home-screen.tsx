@@ -11,6 +11,8 @@ export function HomeScreen({
   insetsBottom,
   latestRecord,
   recordsCount,
+  todayRecordsCount,
+  todaySeconds,
   totalSeconds,
   onStart,
   onSelectTab,
@@ -19,11 +21,14 @@ export function HomeScreen({
   insetsBottom: number;
   latestRecord?: RecordItem;
   recordsCount: number;
+  todayRecordsCount: number;
+  todaySeconds: number;
   totalSeconds: number;
   onStart: () => void;
   onSelectTab: (tab: 'home' | 'calendar') => void;
 }) {
   const totalMinutes = Math.round(totalSeconds / 60);
+  const todayMinutes = Math.round(todaySeconds / 60);
 
   return (
     <View style={styles.screen}>
@@ -44,10 +49,10 @@ export function HomeScreen({
           <View style={styles.statusAura} />
           <View style={styles.statusCircle}>
             <Text style={styles.statusLabel}>今日状态</Text>
-            <Text style={styles.statusText}>{recordsCount ? '已打卡' : '尚未打卡'}</Text>
+            <Text style={styles.statusText}>{todayRecordsCount ? '已打卡' : '尚未打卡'}</Text>
           </View>
           <Text style={styles.todayMinutes}>
-            {totalMinutes} <Text style={styles.todayUnit}>分钟</Text>
+            {todayMinutes} <Text style={styles.todayUnit}>分钟</Text>
           </Text>
           <Text style={styles.capsLabel}>今日已站桩时长</Text>
         </View>

@@ -16,7 +16,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.badzhy.zhanzhuangmvp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -24,6 +25,17 @@
     "plugins": [
       "expo-font",
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4b65f9b0-ba11-4af5-857c-d457759f7b3c"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/4b65f9b0-ba11-4af5-857c-d457759f7b3c"
+    }
   }
 }

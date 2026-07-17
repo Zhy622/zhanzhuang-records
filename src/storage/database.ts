@@ -1,6 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 import type { RecordItem } from '../types/record';
+import { toDateKey } from '../utils/time';
 
 type RecordRow = {
   id: string;
@@ -27,9 +28,14 @@ const parseJsonArray = (value: string) => {
   }
 };
 
+const getRecordDate = (createdAt: string, fallback: string) => {
+  const date = new Date(createdAt);
+  return Number.isNaN(date.getTime()) ? fallback : toDateKey(date);
+};
+
 const toRecord = (row: RecordRow): RecordItem => ({
   id: row.id,
-  date: row.date,
+  date: getRecordDate(row.created_at, row.date),
   startTime: row.start_time,
   endTime: row.end_time,
   duration: row.duration,

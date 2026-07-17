@@ -9,6 +9,7 @@
     "expo-font": "~56.0.7",
     "expo-linear-gradient": "~56.0.4",
     "expo-sqlite": "~56.0.5",
+    "expo-updates": "~56.0.22",
     "lucide-react-native": "^1.24.0",
     "react": "19.2.3",
     "react-native": "0.85.3",

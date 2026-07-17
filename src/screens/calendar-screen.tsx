@@ -10,7 +10,6 @@ import { toDateKey } from '../utils/time';
 
 const dayLabels = ['日', '一', '二', '三', '四', '五', '六'];
 
-const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 const addDays = (date: Date, days: number) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 
 const formatMinutes = (seconds: number) => `${Math.round(seconds / 60)}分钟`;
@@ -61,22 +60,23 @@ export function CalendarScreen({
   insetsTop,
   insetsBottom,
   records,
+  todayKey,
   onOpenRecord,
   onSelectTab,
 }: {
   insetsTop: number;
   insetsBottom: number;
   records: RecordItem[];
+  todayKey: string;
   onOpenRecord: (record: RecordItem) => void;
   onSelectTab: (tab: 'home' | 'calendar') => void;
 }) {
-  const selectedRecord = records[0];
-  const initialDate = selectedRecord ? new Date(`${selectedRecord.date}T00:00:00`) : startOfDay(new Date());
+  const initialDate = new Date(`${todayKey}T00:00:00`);
   const [selectedDate, setSelectedDate] = useState(initialDate);
 
   useEffect(() => {
-    if (selectedRecord) setSelectedDate(new Date(`${selectedRecord.date}T00:00:00`));
-  }, [selectedRecord?.id]);
+    setSelectedDate(new Date(`${todayKey}T00:00:00`));
+  }, [todayKey]);
 
   const changeMonth = (offset: number) => {
     setSelectedDate((date) => new Date(date.getFullYear(), date.getMonth() + offset, 1));
