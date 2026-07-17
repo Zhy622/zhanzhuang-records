@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StatusBar, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,6 +24,9 @@ export function ZhanZhuangApp() {
   const [sessionStartedAt, setSessionStartedAt] = useState(new Date());
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
   const [todayKey, setTodayKey] = useState(() => toDateKey(new Date()));
+  const elapsedRef = useRef(0);
+  const elapsedBaseRef = useRef(0);
+  const runStartedAtRef = useRef<number | null>(null);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -41,7 +44,9 @@ export function ZhanZhuangApp() {
 
   useEffect(() => {
     if (screen !== 'timer' || !running) return;
-    const timer = setInterval(() => setElapsed((value) => value + 1), 1000);
+    const timer = setInterval(() => {
+      setSyncedElapsed(getCurrentElapsed());
+    }, 1000);
     return () => clearInterval(timer);
   }, [running, screen]);
 
@@ -58,18 +63,48 @@ export function ZhanZhuangApp() {
   const todaySeconds = todayRecords.reduce((sum, item) => sum + item.duration, 0);
   const latestRecord = records[0];
   const selectedRecord = records.find((record) => record.id === selectedRecordId);
+  const getCurrentElapsed = () => {
+    if (!runStartedAtRef.current) return elapsedRef.current;
+    return elapsedBaseRef.current + Math.floor((Date.now() - runStartedAtRef.current) / 1000);
+  };
+  const setSyncedElapsed = (value: number) => {
+    elapsedRef.current = value;
+    setElapsed(value);
+  };
 
   const startPractice = () => {
-    setSessionStartedAt(new Date());
-    setElapsed(0);
+    const now = new Date();
+    setSessionStartedAt(now);
+    elapsedBaseRef.current = 0;
+    runStartedAtRef.current = now.getTime();
+    setSyncedElapsed(0);
     setRunning(true);
     setScreen('timer');
   };
 
   const finishPractice = () => {
+    const finalElapsed = Math.max(getCurrentElapsed(), 1);
+    setSyncedElapsed(finalElapsed);
     setRunning(false);
-    setSessionDuration(Math.max(elapsed, 60));
+    runStartedAtRef.current = null;
+    elapsedBaseRef.current = finalElapsed;
+    setSessionDuration(Math.max(finalElapsed, 60));
     setScreen('record');
+  };
+
+  const togglePractice = () => {
+    if (running) {
+      const currentElapsed = getCurrentElapsed();
+      setSyncedElapsed(currentElapsed);
+      elapsedBaseRef.current = currentElapsed;
+      runStartedAtRef.current = null;
+      setRunning(false);
+      return;
+    }
+
+    elapsedBaseRef.current = elapsedRef.current;
+    runStartedAtRef.current = Date.now();
+    setRunning(true);
   };
 
   const saveRecord = async (record: NewRecordInput) => {
@@ -153,11 +188,13 @@ export function ZhanZhuangApp() {
           posture={selectedPosture}
           running={running}
           onBack={() => {
+            setSyncedElapsed(getCurrentElapsed());
             setRunning(false);
+            runStartedAtRef.current = null;
             setScreen('home');
           }}
           onFinish={finishPractice}
-          onPause={() => setRunning((value) => !value)}
+          onPause={togglePractice}
         />
       )}
       {screen === 'record' && (
