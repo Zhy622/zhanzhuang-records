@@ -16,6 +16,9 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "permissions": [
+        "SCHEDULE_EXACT_ALARM"
+      ],
       "predictiveBackGestureEnabled": false,
       "package": "com.badzhy.zhanzhuangmvp"
     },
@@ -24,7 +27,14 @@
     },
     "plugins": [
       "expo-font",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-notifications",
+        {
+          "color": "#006c52",
+          "defaultChannel": "daily-practice-reminder"
+        }
+      ]
     ],
     "extra": {
       "eas": {

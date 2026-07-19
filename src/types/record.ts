@@ -1,4 +1,4 @@
-export type Screen = 'home' | 'calendar' | 'posture' | 'timer' | 'record' | 'recordDetail';
+export type Screen = 'login' | 'register' | 'home' | 'calendar' | 'stats' | 'profile' | 'posture' | 'timer' | 'record' | 'recordDetail';
 
 export type RecordItem = {
   id: string;

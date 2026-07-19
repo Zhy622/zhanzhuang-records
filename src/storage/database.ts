@@ -63,6 +63,11 @@ export const initDatabase = async () => {
       tags TEXT NOT NULL,
       created_at TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT NOT NULL
+    );
   `);
 };
 
@@ -107,4 +112,15 @@ export const insertRecord = async (record: RecordItem) => {
 export const deleteRecord = async (id: string) => {
   const db = await dbPromise;
   await db.runAsync('DELETE FROM records WHERE id = ?', [id]);
+};
+
+export const getSetting = async (key: string) => {
+  const db = await dbPromise;
+  const row = await db.getFirstAsync<{ value: string }>('SELECT value FROM settings WHERE key = ?', [key]);
+  return row?.value ?? '';
+};
+
+export const setSetting = async (key: string, value: string) => {
+  const db = await dbPromise;
+  await db.runAsync('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', [key, value]);
 };

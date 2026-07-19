@@ -52,19 +52,23 @@ export function ChipRow({
   selected,
   onToggle,
   tag,
+  tone,
 }: {
   options: string[];
   selected: string[];
   onToggle: (value: string) => void;
   tag?: boolean;
+  tone?: 'sensation' | 'mood';
 }) {
   return (
     <View style={tag ? styles.tagWrap : styles.chipWrap}>
       {options.map((item) => {
         const active = selected.includes(item);
+        const activeChip = tag ? styles.tagActive : tone === 'sensation' ? styles.sensationChipActive : tone === 'mood' ? styles.moodChipActive : styles.chipActive;
+        const activeText = tag ? styles.tagTextActive : tone === 'sensation' ? styles.sensationChipTextActive : tone === 'mood' ? styles.moodChipTextActive : styles.chipTextActive;
         return (
-          <Pressable key={item} onPress={() => onToggle(item)} style={[tag ? styles.tagChip : styles.chip, active && (tag ? styles.tagActive : styles.chipActive)]}>
-            <Text style={[tag ? styles.tagText : styles.chipText, active && (tag ? styles.tagTextActive : styles.chipTextActive)]}>{item}</Text>
+          <Pressable key={item} onPress={() => onToggle(item)} style={[tag ? styles.tagChip : styles.chip, active && activeChip]}>
+            <Text style={[tag ? styles.tagText : styles.chipText, active && activeText]}>{item}</Text>
           </Pressable>
         );
       })}
@@ -82,15 +86,15 @@ export function BottomTabs({
   onSelect,
 }: {
   bottom: number;
-  active: 'home' | 'calendar';
-  onSelect: (tab: 'home' | 'calendar') => void;
+  active: 'home' | 'calendar' | 'stats' | 'profile';
+  onSelect: (tab: 'home' | 'calendar' | 'stats' | 'profile') => void;
 }) {
   return (
     <View style={[styles.bottomTabs, { paddingBottom: Math.max(bottom, 10) }]}>
-      <Tab active={active === 'home'} icon={<Home size={24} />} label="Home" onPress={() => onSelect('home')} />
-      <Tab active={active === 'calendar'} icon={<CalendarDays size={24} />} label="Calendar" onPress={() => onSelect('calendar')} />
-      <Tab icon={<BarChart3 size={24} />} label="Analysis" />
-      <Tab icon={<User size={24} />} label="Profile" />
+      <Tab active={active === 'home'} icon={<Home size={24} />} label="首页" onPress={() => onSelect('home')} />
+      <Tab active={active === 'calendar'} icon={<CalendarDays size={24} />} label="日历" onPress={() => onSelect('calendar')} />
+      <Tab active={active === 'stats'} icon={<BarChart3 size={24} />} label="统计" onPress={() => onSelect('stats')} />
+      <Tab active={active === 'profile'} icon={<User size={24} />} label="我的" onPress={() => onSelect('profile')} />
     </View>
   );
 }
@@ -114,7 +118,7 @@ function Tab({
           {React.cloneElement(icon, {
             color,
             strokeWidth: 1.9,
-            fill: active ? colors.primary : 'transparent',
+            fill: 'transparent',
           })}
         </View>
       )}

@@ -1,0 +1,128 @@
+Starting project at D:\站桩APP\zhan-zhuang-mvp
+Starting Metro Bundler
+
+Waiting on http://localhost:8096
+An update for expo is available: 56.0.15 → ~56.0.16
+0 other packages may need updating. Run npx expo install --check for details.
+Logs for your project will appear below.
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:17820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+Web Bundled 12515ms index.ts (2133 modules)
+Web  LOG  Running application "main" with appParams:
+ {"hydrate": undefined, "rootTag": "#root"} 
+Development-level warnings: ON.
+Performance optimizations: OFF.
+Web Bundling failed 141ms node_modules\expo-sqlite\web\worker.ts (1 module)
+Unable to resolve "./wa-sqlite/wa-sqlite.wasm" from "node_modules\expo-sqlite\web\worker.ts"
+[0m [90m 20 |[39m [36mimport[39m [33mWaSQLiteFactory[39m [36mfrom[39m [32m'./wa-sqlite/wa-sqlite'[39m[33m;[39m
+ [90m 21 |[39m [90m// @ts-expect-error wasm module is not typed[39m
+[31m[1m>[22m[39m[90m 22 |[39m [36mimport[39m wasmModule [36mfrom[39m [32m'./wa-sqlite/wa-sqlite.wasm'[39m[33m;[39m
+ [90m    |[39m                         [31m[1m^[22m[39m
+ [90m 23 |[39m [36mimport[39m {
+ [90m 24 |[39m   type [33mSQLiteWorkerMessage[39m[33m,[39m
+ [90m 25 |[39m   type [33mSQLiteWorkerMessageType[39m[33m,[39m[0m
+
+Import stack:
+
+ node_modules\expo-sqlite\web\worker.ts
+ | import "./wa-sqlite/wa-sqlite.wasm"
+
+ 
+ | import "./node_modules/expo-sqlite/web/worker"
+
+Web  WARN  Cannot record touch end without a touch start.
+ Touch End: {"identifier":0,"pageX":1188,"pageY":61,"timestamp":17819.600000023842}
+ Touch Bank: []
+Android Bundled 3892ms index.ts (2656 modules)
+Web Bundled 49ms index.ts (1 module)
+Web Bundling failed 22ms node_modules\expo-sqlite\web\worker.ts (1 module)
+Unable to resolve "./wa-sqlite/wa-sqlite.wasm" from "node_modules\expo-sqlite\web\worker.ts"
+[0m [90m 20 |[39m [36mimport[39m [33mWaSQLiteFactory[39m [36mfrom[39m [32m'./wa-sqlite/wa-sqlite'[39m[33m;[39m
+ [90m 21 |[39m [90m// @ts-expect-error wasm module is not typed[39m
+[31m[1m>[22m[39m[90m 22 |[39m [36mimport[39m wasmModule [36mfrom[39m [32m'./wa-sqlite/wa-sqlite.wasm'[39m[33m;[39m
+ [90m    |[39m                         [31m[1m^[22m[39m
+ [90m 23 |[39m [36mimport[39m {
+ [90m 24 |[39m   type [33mSQLiteWorkerMessage[39m[33m,[39m
+ [90m 25 |[39m   type [33mSQLiteWorkerMessageType[39m[33m,[39m[0m
+
+Import stack:
+
+ node_modules\expo-sqlite\web\worker.ts
+ | import "./wa-sqlite/wa-sqlite.wasm"
+
+ 
+ | import "./node_modules/expo-sqlite/web/worker"
+
+Web  INFO  %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+Web  LOG  Running application "main" with appParams:
+ {"hydrate": undefined, "rootTag": "#root"} 
+Development-level warnings: ON.
+Performance optimizations: OFF.
+Web Bundled 41ms index.ts (1 module)
+Web Bundling failed 16ms node_modules\expo-sqlite\web\worker.ts (1 module)
+Unable to resolve "./wa-sqlite/wa-sqlite.wasm" from "node_modules\expo-sqlite\web\worker.ts"
+[0m [90m 20 |[39m [36mimport[39m [33mWaSQLiteFactory[39m [36mfrom[39m [32m'./wa-sqlite/wa-sqlite'[39m[33m;[39m
+ [90m 21 |[39m [90m// @ts-expect-error wasm module is not typed[39m
+[31m[1m>[22m[39m[90m 22 |[39m [36mimport[39m wasmModule [36mfrom[39m [32m'./wa-sqlite/wa-sqlite.wasm'[39m[33m;[39m
+ [90m    |[39m                         [31m[1m^[22m[39m
+ [90m 23 |[39m [36mimport[39m {
+ [90m 24 |[39m   type [33mSQLiteWorkerMessage[39m[33m,[39m
+ [90m 25 |[39m   type [33mSQLiteWorkerMessageType[39m[33m,[39m[0m
+
+Import stack:
+
+ node_modules\expo-sqlite\web\worker.ts
+ | import "./wa-sqlite/wa-sqlite.wasm"
+
+ 
+ | import "./node_modules/expo-sqlite/web/worker"
+
+Web  INFO  %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+Web  LOG  Running application "main" with appParams:
+ {"hydrate": undefined, "rootTag": "#root"} 
+Development-level warnings: ON.
+Performance optimizations: OFF.
+Web Bundled 36ms index.ts (1 module)
+Web Bundling failed 10ms node_modules\expo-sqlite\web\worker.ts (1 module)
+Unable to resolve "./wa-sqlite/wa-sqlite.wasm" from "node_modules\expo-sqlite\web\worker.ts"
+[0m [90m 20 |[39m [36mimport[39m [33mWaSQLiteFactory[39m [36mfrom[39m [32m'./wa-sqlite/wa-sqlite'[39m[33m;[39m
+ [90m 21 |[39m [90m// @ts-expect-error wasm module is not typed[39m
+[31m[1m>[22m[39m[90m 22 |[39m [36mimport[39m wasmModule [36mfrom[39m [32m'./wa-sqlite/wa-sqlite.wasm'[39m[33m;[39m
+ [90m    |[39m                         [31m[1m^[22m[39m
+ [90m 23 |[39m [36mimport[39m {
+ [90m 24 |[39m   type [33mSQLiteWorkerMessage[39m[33m,[39m
+ [90m 25 |[39m   type [33mSQLiteWorkerMessageType[39m[33m,[39m[0m
+
+Import stack:
+
+ node_modules\expo-sqlite\web\worker.ts
+ | import "./wa-sqlite/wa-sqlite.wasm"
+
+ 
+ | import "./node_modules/expo-sqlite/web/worker"
+
+Web  INFO  %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+Web  LOG  Running application "main" with appParams:
+ {"hydrate": undefined, "rootTag": "#root"} 
+Development-level warnings: ON.
+Performance optimizations: OFF.

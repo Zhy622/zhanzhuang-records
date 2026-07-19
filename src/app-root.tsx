@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { StatusBar, View } from 'react-native';
+import { BackHandler, Platform, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { postures } from './constants/options';
 import { colors } from './constants/theme';
+import { AuthScreen } from './screens/auth-screen';
 import { CalendarScreen } from './screens/calendar-screen';
 import { HomeScreen } from './screens/home-screen';
 import { PostureScreen } from './screens/posture-screen';
+import { ProfileScreen } from './screens/profile-screen';
 import { RecordScreen } from './screens/record-screen';
+import { StatsScreen } from './screens/stats-screen';
 import { TimerScreen } from './screens/timer-screen';
 import { deleteRecord, initDatabase, insertRecord, listRecords } from './storage/database';
 import { styles } from './styles';
@@ -15,7 +18,8 @@ import type { NewRecordInput, RecordItem, Screen } from './types/record';
 import { toDateKey } from './utils/time';
 
 export function ZhanZhuangApp() {
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreen] = useState<Screen>('login');
+  const [profileName, setProfileName] = useState('修行者 默白');
   const [records, setRecords] = useState<RecordItem[]>([]);
   const [selectedPosture, setSelectedPosture] = useState(postures[1]);
   const [elapsed, setElapsed] = useState(0);
@@ -63,6 +67,7 @@ export function ZhanZhuangApp() {
   const todaySeconds = todayRecords.reduce((sum, item) => sum + item.duration, 0);
   const latestRecord = records[0];
   const selectedRecord = records.find((record) => record.id === selectedRecordId);
+  const primaryScreen = screen === 'home' || screen === 'calendar' || screen === 'stats' || screen === 'profile';
   const getCurrentElapsed = () => {
     if (!runStartedAtRef.current) return elapsedRef.current;
     return elapsedBaseRef.current + Math.floor((Date.now() - runStartedAtRef.current) / 1000);
@@ -140,10 +145,77 @@ export function ZhanZhuangApp() {
     setSelectedRecordId(null);
     setScreen('calendar');
   };
+  const enterApp = (name?: string) => {
+    setRecords([]);
+    setSelectedRecordId(null);
+    if (name) {
+      setProfileName(name);
+      setScreen('home');
+      return;
+    }
+    setProfileName('修行者 默白');
+    setScreen('home');
+  };
+  const logout = () => {
+    setRecords([]);
+    setSelectedRecordId(null);
+    setScreen('login');
+  };
+  const leaveTimer = () => {
+    setSyncedElapsed(getCurrentElapsed());
+    setRunning(false);
+    runStartedAtRef.current = null;
+    setScreen('home');
+  };
+  const leaveSecondary = () => {
+    if (screen === 'timer') {
+      leaveTimer();
+      return true;
+    }
+    if (screen === 'recordDetail') {
+      setScreen('calendar');
+      return true;
+    }
+    if (screen === 'register') {
+      setScreen('login');
+      return true;
+    }
+    if (screen === 'posture' || screen === 'record') {
+      setScreen('home');
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', leaveSecondary);
+    return () => subscription.remove();
+  }, [screen]);
 
   return (
     <View style={styles.app}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+      {primaryScreen && Platform.OS !== 'web' && (
+        <View pointerEvents="none" style={[styles.nativeTopCleanStrip, { height: Math.min(insets.top + 24, 52) }]} />
+      )}
+      {screen === 'login' && (
+        <AuthScreen
+          mode="login"
+          insetsTop={insets.top}
+          insetsBottom={insets.bottom}
+          onSubmit={enterApp}
+          onSwitchMode={() => setScreen('register')}
+        />
+      )}
+      {screen === 'register' && (
+        <AuthScreen
+          mode="register"
+          insetsTop={insets.top}
+          insetsBottom={insets.bottom}
+          onSubmit={enterApp}
+          onSwitchMode={() => setScreen('login')}
+        />
+      )}
       {screen === 'home' && (
         <HomeScreen
           insetsTop={insets.top}
@@ -153,7 +225,15 @@ export function ZhanZhuangApp() {
           todayRecordsCount={todayRecords.length}
           todaySeconds={todaySeconds}
           totalSeconds={totalSeconds}
-          onStart={() => setScreen('posture')}
+          onStart={startPractice}
+          onOpenLatest={() => {
+            if (!latestRecord) {
+              setScreen('calendar');
+              return;
+            }
+            setSelectedRecordId(latestRecord.id);
+            setScreen('recordDetail');
+          }}
           onSelectTab={setScreen}
         />
       )}
@@ -167,6 +247,25 @@ export function ZhanZhuangApp() {
             setSelectedRecordId(record.id);
             setScreen('recordDetail');
           }}
+          onSelectTab={setScreen}
+        />
+      )}
+      {screen === 'stats' && (
+        <StatsScreen
+          insetsTop={insets.top}
+          insetsBottom={insets.bottom}
+          records={records}
+          todayKey={todayKey}
+          onSelectTab={setScreen}
+        />
+      )}
+      {screen === 'profile' && (
+        <ProfileScreen
+          insetsTop={insets.top}
+          insetsBottom={insets.bottom}
+          records={records}
+          profileName={profileName}
+          onLogout={logout}
           onSelectTab={setScreen}
         />
       )}
@@ -187,12 +286,7 @@ export function ZhanZhuangApp() {
           insetsBottom={insets.bottom}
           posture={selectedPosture}
           running={running}
-          onBack={() => {
-            setSyncedElapsed(getCurrentElapsed());
-            setRunning(false);
-            runStartedAtRef.current = null;
-            setScreen('home');
-          }}
+          onBack={leaveTimer}
           onFinish={finishPractice}
           onPause={togglePractice}
         />

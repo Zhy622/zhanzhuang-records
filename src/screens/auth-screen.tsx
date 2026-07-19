@@ -1,0 +1,95 @@
+import { ArrowLeft, Leaf, LockKeyhole, Phone, UserRound } from 'lucide-react-native';
+import { useState } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+
+import { colors } from '../constants/theme';
+import { styles } from '../styles';
+
+export function AuthScreen({
+  mode,
+  insetsTop,
+  insetsBottom,
+  onSubmit,
+  onSwitchMode,
+}: {
+  mode: 'login' | 'register';
+  insetsTop: number;
+  insetsBottom: number;
+  onSubmit: (name: string) => void;
+  onSwitchMode: () => void;
+}) {
+  const register = mode === 'register';
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const disabled = !phone.trim() || !password.trim() || (register && !name.trim());
+
+  return (
+    <View style={styles.screen}>
+      {register && (
+        <Pressable onPress={onSwitchMode} style={[styles.authBack, { top: insetsTop + 12 }]}>
+          <ArrowLeft color={colors.primary} size={22} strokeWidth={1.8} />
+        </Pressable>
+      )}
+      <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView
+          bounces={false}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.authScroll, { paddingTop: insetsTop + 44, paddingBottom: insetsBottom + 36 }]}
+        >
+
+        <View style={styles.authHero}>
+          <View style={styles.authMark}>
+            <Leaf color={colors.primary} size={34} strokeWidth={1.7} />
+          </View>
+          <Text style={styles.authTitle}>{register ? '创建账号' : '欢迎回来'}</Text>
+          <Text style={styles.authSubtitle}>{register ? '从今天开始，安静记录自己的变化。' : '给自己一点安静的时间。'}</Text>
+        </View>
+
+        <View style={styles.authCard}>
+          {register && (
+            <View style={styles.authField}>
+              <View style={styles.authFieldLabelRow}>
+                <UserRound color={colors.outline} size={16} strokeWidth={1.8} />
+                <Text style={styles.authFieldLabel}>昵称</Text>
+              </View>
+              <TextInput value={name} onChangeText={setName} style={styles.authInput} placeholder="例如：默白" placeholderTextColor="rgba(115,121,111,0.45)" />
+            </View>
+          )}
+
+          <View style={styles.authField}>
+            <View style={styles.authFieldLabelRow}>
+              <Phone color={colors.outline} size={16} strokeWidth={1.8} />
+              <Text style={styles.authFieldLabel}>手机号</Text>
+            </View>
+            <TextInput value={phone} onChangeText={setPhone} style={styles.authInput} keyboardType="phone-pad" placeholder="请输入手机号" placeholderTextColor="rgba(115,121,111,0.45)" />
+          </View>
+
+          <View style={styles.authField}>
+            <View style={styles.authFieldLabelRow}>
+              <LockKeyhole color={colors.outline} size={16} strokeWidth={1.8} />
+              <Text style={styles.authFieldLabel}>密码</Text>
+            </View>
+            <TextInput value={password} onChangeText={setPassword} style={styles.authInput} secureTextEntry placeholder="请输入密码" placeholderTextColor="rgba(115,121,111,0.45)" />
+          </View>
+
+          <Pressable disabled={disabled} onPress={() => onSubmit(register ? name.trim() : '')} style={({ pressed }) => [styles.authButton, disabled && styles.disabled, pressed && styles.pressed]}>
+            <Text style={styles.authButtonText}>{register ? '注册并进入' : '登录'}</Text>
+          </Pressable>
+
+          <View style={styles.authSwitchRow}>
+            <Text style={styles.authSwitchText}>{register ? '已经有账号？' : '还没有账号？'}</Text>
+            <Pressable onPress={onSwitchMode} hitSlop={8}>
+              <Text style={styles.authSwitchButton}>{register ? '去登录' : '创建账号'}</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <Text style={styles.authHint}>MVP 阶段仅保留本地登录流程，后续接入正式账号系统。</Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
+  );
+}

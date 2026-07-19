@@ -1,10 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Pause, Play, Square, Volume2 } from 'lucide-react-native';
+import { ArrowLeft, Pause, Play, Square } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 import Svg, { Circle as SvgCircle } from 'react-native-svg';
 
 import { GlassCard, TopBar } from '../components/ui';
-import { postureNames } from '../constants/options';
 import { colors } from '../constants/theme';
 import { styles } from '../styles';
 import { formatClock } from '../utils/time';
@@ -33,19 +32,19 @@ export function TimerScreen({
   const dashOffset = circumference - progress * circumference;
 
   return (
-    <LinearGradient colors={['rgba(74,103,65,0.08)', colors.surface, colors.surface]} style={styles.timerScreen}>
+    <View style={styles.screen}>
       <TopBar
         top={insetsTop}
-        title="SESSION IN PROGRESS"
-        titleStyle={styles.sessionTitle}
-        left={<ArrowLeft color={colors.timerPrimary} size={24} strokeWidth={1.8} />}
+        title="站桩计时"
+        titleStyle={styles.recordTopTitle}
+        left={<ArrowLeft color={colors.primary} size={24} strokeWidth={1.8} />}
         onLeftPress={onBack}
       />
 
       <View style={[styles.timerContent, { paddingBottom: 24 + insetsBottom }]}>
         <View style={styles.poseInfo}>
-          <Text style={styles.timerPose}>当前姿势：{posture}</Text>
-          <Text style={styles.capsLabel}>{postureNames[posture] || postureNames.自定义}</Text>
+          <Text style={styles.timerPose}>志守一井 力求汲泉</Text>
+          <Text style={styles.capsLabel}>先完成再完美</Text>
         </View>
 
         <View style={styles.timerCenter}>
@@ -73,33 +72,28 @@ export function TimerScreen({
 
         <View style={styles.controlPanel}>
           <Pressable onPress={onFinish} style={styles.sideControl}>
-            <GlassCard style={styles.sideControlIcon}>
-              <Square color={colors.variant} size={23} fill={colors.variant} strokeWidth={1.5} />
+            <GlassCard style={[styles.sideControlIcon, styles.finishControlIcon]}>
+              <Square color={colors.variant} size={23} strokeWidth={1.8} />
             </GlassCard>
             <Text style={styles.controlLabel}>结束</Text>
           </Pressable>
 
-          <Pressable onPress={onPause} style={({ pressed }) => [styles.mainControl, pressed && styles.pressed]}>
-            {running ? (
-              <Pause color={colors.white} size={38} fill={colors.white} />
-            ) : (
-              <Play color={colors.white} size={38} fill={colors.white} />
-            )}
-          </Pressable>
-
-          <View style={styles.sideControl}>
+          <Pressable onPress={onPause} style={({ pressed }) => [styles.sideControl, pressed && styles.pressed]}>
             <GlassCard style={styles.sideControlIcon}>
-              <Volume2 color={colors.variant} size={24} strokeWidth={1.6} />
+              {running ? (
+                <Pause color={colors.variant} size={25} strokeWidth={1.8} />
+              ) : (
+                <Play color={colors.variant} size={25} strokeWidth={1.8} />
+              )}
             </GlassCard>
-            <Text style={styles.controlLabel}>氛围</Text>
-          </View>
+            <Text style={styles.controlLabel}>{running ? '暂停' : '开始'}</Text>
+          </Pressable>
         </View>
 
         <Pressable onPress={onBack}>
           <Text style={styles.exitPractice}>退出练习</Text>
         </Pressable>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
-

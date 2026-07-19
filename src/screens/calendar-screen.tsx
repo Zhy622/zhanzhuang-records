@@ -1,4 +1,4 @@
-import { ArrowLeft, CalendarDays, Clock3, Leaf, MoreVertical, NotebookPen, Waves } from 'lucide-react-native';
+import { BookOpenText, Leaf, Timer } from 'lucide-react-native';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 
@@ -6,55 +6,71 @@ import { BottomTabs, GlassCard } from '../components/ui';
 import { colors } from '../constants/theme';
 import { styles } from '../styles';
 import type { RecordItem } from '../types/record';
-import { toDateKey } from '../utils/time';
 
+const calendarIcon = require('../../assets/figma-calendar-icon.png');
 const dayLabels = ['日', '一', '二', '三', '四', '五', '六'];
 
-const addDays = (date: Date, days: number) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+function dateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
-const formatMinutes = (seconds: number) => `${Math.round(seconds / 60)}分钟`;
-const formatHours = (seconds: number) => `${(seconds / 3600).toFixed(1)} 小时`;
+function parseLocalDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 
-const getMonthCount = (records: RecordItem[], date: Date) => {
-  const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  return records.filter((record) => record.date.startsWith(month)).length;
-};
+function buildCalendarDays(displayDate: Date) {
+  const year = displayDate.getFullYear();
+  const month = displayDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
 
-const getLongestStreak = (records: RecordItem[]) => {
-  const days = [...new Set(records.map((record) => record.date))].sort();
+  return Array.from({ length: totalCells }, (_, index) => {
+    const dayNumber = index - firstDay + 1;
+    if (dayNumber < 1) return { date: new Date(year, month - 1, prevMonthDays + dayNumber), inMonth: false };
+    if (dayNumber > daysInMonth) return { date: new Date(year, month + 1, dayNumber - daysInMonth), inMonth: false };
+    return { date: new Date(year, month, dayNumber), inMonth: true };
+  });
+}
+
+function getMonthRecords(records: RecordItem[], displayDate: Date) {
+  return records.filter((record) => {
+    const recordDate = parseLocalDate(record.date);
+    return recordDate.getFullYear() === displayDate.getFullYear() && recordDate.getMonth() === displayDate.getMonth();
+  });
+}
+
+function getLongestStreak(records: RecordItem[]) {
+  const dates = Array.from(new Set(records.map((record) => record.date))).sort();
   let longest = 0;
   let current = 0;
-  let previous = '';
+  let previous: Date | undefined;
 
-  days.forEach((day) => {
-    const expected = previous ? toDateKey(addDays(new Date(`${previous}T00:00:00`), 1)) : '';
-    current = !previous || day === expected ? current + 1 : 1;
+  dates.forEach((value) => {
+    const date = parseLocalDate(value);
+    const diff = previous ? Math.round((date.getTime() - previous.getTime()) / 86400000) : 0;
+    current = !previous || diff === 1 ? current + 1 : 1;
     longest = Math.max(longest, current);
-    previous = day;
+    previous = date;
   });
 
   return longest;
-};
+}
 
-const buildCalendarCells = (selectedDate: Date, recordDates: Set<string>) => {
-  const firstDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-  const lastDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-  const gridStart = addDays(firstDay, -firstDay.getDay());
-  const cellCount = Math.ceil((firstDay.getDay() + lastDay.getDate()) / 7) * 7;
+function formatMinutes(seconds: number) {
+  return `${Math.round(seconds / 60)}分钟`;
+}
 
-  return Array.from({ length: cellCount }, (_, index) => {
-    const date = addDays(gridStart, index);
-    const key = toDateKey(date);
-    return {
-      key,
-      date,
-      day: date.getDate(),
-      muted: date.getMonth() !== selectedDate.getMonth(),
-      selected: key === toDateKey(selectedDate),
-      hasRecord: recordDates.has(key),
-    };
-  });
-};
+function formatTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '--:--';
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
 
 export function CalendarScreen({
   insetsTop,
@@ -69,52 +85,45 @@ export function CalendarScreen({
   records: RecordItem[];
   todayKey: string;
   onOpenRecord: (record: RecordItem) => void;
-  onSelectTab: (tab: 'home' | 'calendar') => void;
+  onSelectTab: (tab: 'home' | 'calendar' | 'stats' | 'profile') => void;
 }) {
-  const initialDate = new Date(`${todayKey}T00:00:00`);
-  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [selectedDate, setSelectedDate] = useState(() => parseLocalDate(todayKey));
+  const [displayDate, setDisplayDate] = useState(() => parseLocalDate(todayKey));
 
   useEffect(() => {
-    setSelectedDate(new Date(`${todayKey}T00:00:00`));
+    const today = parseLocalDate(todayKey);
+    setSelectedDate(today);
+    setDisplayDate(today);
   }, [todayKey]);
 
-  const changeMonth = (offset: number) => {
-    setSelectedDate((date) => new Date(date.getFullYear(), date.getMonth() + offset, 1));
-  };
-
+  const selectedKey = dateKey(selectedDate);
+  const selectedRecords = records.filter((record) => record.date === selectedKey);
   const recordDates = new Set(records.map((record) => record.date));
-  const selectedDayRecords = records.filter((record) => record.date === toDateKey(selectedDate));
-  const primaryRecord = selectedDayRecords[0];
-  const calendarCells = buildCalendarCells(selectedDate, recordDates);
-  const totalSeconds = records.reduce((sum, record) => sum + record.duration, 0);
+  const monthCells = buildCalendarDays(displayDate);
+  const monthRecords = getMonthRecords(records, displayDate);
+  const monthSeconds = monthRecords.reduce((sum, record) => sum + record.duration, 0);
 
   return (
     <View style={styles.screen}>
-      <View style={[styles.calendarHeader, { paddingTop: insetsTop + 14 }]}>
-        <ArrowLeft color={colors.primary} size={24} strokeWidth={1.9} />
-        <Text style={styles.calendarHeaderTitle}>修行日历</Text>
-        <MoreVertical color={colors.primary} size={24} strokeWidth={1.9} />
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.figmaCalendarScroll, { paddingBottom: 116 + insetsBottom }]}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.figmaCalendarScroll, { paddingBottom: 118 + insetsBottom }]}>
         <GlassCard style={styles.growthCard}>
           <View>
             <Text style={styles.growthLabel}>修行状态</Text>
             <Text style={styles.growthText}>{records.length ? '持续生长' : '等待发芽'}</Text>
           </View>
           <View style={styles.growthIconCircle}>
-            <Leaf color={colors.primary} fill={colors.primary} size={26} strokeWidth={1.5} />
+            <Leaf color={colors.primary} size={34} strokeWidth={1.6} />
           </View>
         </GlassCard>
 
         <View style={styles.monthStatsRow}>
           <GlassCard style={styles.monthStatCard}>
             <Text style={styles.monthStatLabel}>本月次数</Text>
-            <Text style={styles.monthStatValue}>{getMonthCount(records, selectedDate)}次</Text>
+            <Text style={styles.monthStatValue}>{monthRecords.length}次</Text>
           </GlassCard>
           <GlassCard style={styles.monthStatCard}>
             <Text style={styles.monthStatLabel}>总时长</Text>
-            <Text style={styles.monthStatValue}>{formatHours(totalSeconds)}</Text>
+            <Text style={styles.monthStatValue}>{Math.round(monthSeconds / 60)}分钟</Text>
           </GlassCard>
         </View>
 
@@ -126,84 +135,78 @@ export function CalendarScreen({
           <View style={styles.streakDots}>
             <View style={[styles.streakDot, styles.streakDotLight]} />
             <View style={styles.streakDot} />
-            <View style={styles.streakDotDark}>
-              <Text style={styles.streakDotText}>+12</Text>
-            </View>
+            <View style={styles.streakDotDark}><Text style={styles.streakDotText}>+</Text></View>
           </View>
         </GlassCard>
 
         <GlassCard style={styles.monthCalendarCard}>
-          <Image source={require('../../assets/figma-calendar-icon.png')} style={styles.monthCalendarBg} />
+          <Image source={calendarIcon} style={styles.monthCalendarBg} />
           <View style={styles.monthHeader}>
-            <Text style={styles.monthTitle}>{selectedDate.getFullYear()} 年 {selectedDate.getMonth() + 1} 月</Text>
+            <Text style={styles.monthTitle}>{displayDate.getFullYear()} 年 {displayDate.getMonth() + 1} 月</Text>
             <View style={styles.monthArrows}>
-              <Pressable onPress={() => changeMonth(-1)} hitSlop={10}>
+              <Pressable onPress={() => setDisplayDate(new Date(displayDate.getFullYear(), displayDate.getMonth() - 1, 1))}>
                 <Text style={styles.monthArrow}>‹</Text>
               </Pressable>
-              <Pressable onPress={() => changeMonth(1)} hitSlop={10}>
+              <Pressable onPress={() => setDisplayDate(new Date(displayDate.getFullYear(), displayDate.getMonth() + 1, 1))}>
                 <Text style={styles.monthArrow}>›</Text>
               </Pressable>
             </View>
           </View>
 
           <View style={styles.weekRow}>
-            {dayLabels.map((day) => (
-              <Text key={day} style={styles.weekLabel}>{day}</Text>
-            ))}
+            {dayLabels.map((day) => <Text key={day} style={styles.weekLabel}>{day}</Text>)}
           </View>
 
           <View style={styles.calendarGrid}>
-            {calendarCells.map((cell) => (
-              <View key={cell.key} style={styles.dayCell}>
-                <Pressable
-                  onPress={() => setSelectedDate(cell.date)}
-                  style={({ pressed }) => [styles.dayBubble, cell.selected && styles.dayBubbleSelected, pressed && styles.pressed]}
-                >
-                  <Text style={[styles.dayText, cell.muted && styles.dayTextMuted, cell.selected && styles.dayTextSelected]}>{cell.day}</Text>
-                  {cell.hasRecord && <View style={[styles.recordDot, cell.selected && styles.recordDotSelected]} />}
+            {monthCells.map(({ date, inMonth }) => {
+              const key = dateKey(date);
+              const selected = key === selectedKey;
+              const hasRecord = recordDates.has(key);
+
+              return (
+                <Pressable key={key} onPress={() => setSelectedDate(date)} style={styles.dayCell}>
+                  <View style={[styles.dayBubble, selected && styles.dayBubbleSelected]}>
+                    <Text style={[styles.dayText, !inMonth && styles.dayTextMuted, selected && styles.dayTextSelected]}>{date.getDate()}</Text>
+                    {hasRecord && <View style={[styles.recordDot, selected && styles.recordDotSelected]} />}
+                  </View>
                 </Pressable>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </GlassCard>
 
-        <GlassCard style={styles.selectedRecordCard}>
-          <View style={styles.selectedDateBar}>
-            <Text style={styles.selectedDateText}>
-              {selectedDate.getMonth() + 1}月{selectedDate.getDate()}日 · 星期{dayLabels[selectedDate.getDay()]}
-            </Text>
-          </View>
-
-          {primaryRecord ? (
-            <Pressable onPress={() => onOpenRecord(primaryRecord)} style={({ pressed }) => [styles.selectedRecordBody, pressed && styles.pressed]}>
+        {selectedRecords.length ? selectedRecords.map((record) => (
+          <Pressable key={record.id} onPress={() => onOpenRecord(record)} style={({ pressed }) => [styles.selectedRecordCard, pressed && styles.pressed]}>
+            <View style={styles.selectedDateBar}>
+              <Text style={styles.selectedDateText}>{selectedDate.getMonth() + 1}月{selectedDate.getDate()}日 · 星期{dayLabels[selectedDate.getDay()]}</Text>
+            </View>
+            <View style={styles.selectedRecordBody}>
               <View style={styles.selectedRecordTop}>
                 <View>
-                  <Text style={styles.selectedPosture}>{primaryRecord.posture}</Text>
                   <View style={styles.selectedDurationRow}>
-                    <Clock3 color={colors.variant} size={17} strokeWidth={1.7} />
-                    <Text style={styles.selectedDuration}>{formatMinutes(primaryRecord.duration)}</Text>
+                    <Timer color={colors.outline} size={15} strokeWidth={1.8} />
+                    <Text style={styles.selectedDuration}>{formatTime(record.startTime)} · {formatMinutes(record.duration)}</Text>
                   </View>
                 </View>
                 <View style={styles.selectedPostureIcon}>
-                  <Waves color={colors.primary} size={24} strokeWidth={2} />
+                  <Leaf color={colors.primary} size={25} strokeWidth={1.6} />
                 </View>
               </View>
-
               <View style={styles.noteBox}>
                 <View style={styles.noteTitleRow}>
-                  <NotebookPen color={colors.primary} size={14} strokeWidth={1.7} />
+                  <BookOpenText color={colors.primary} size={14} strokeWidth={1.8} />
                   <Text style={styles.noteTitle}>心得笔记</Text>
                 </View>
-                <Text style={styles.selectedNote} numberOfLines={4}>{primaryRecord.note}</Text>
+                <Text style={styles.selectedNote}>{record.note || '这次练习还没有留下文字心得。'}</Text>
               </View>
-            </Pressable>
-          ) : (
-            <View style={styles.selectedRecordBody}>
-              <Text style={styles.emptyHistoryTitle}>这一天还没有记录</Text>
-              <Text style={styles.emptyHistoryText}>完成一次站桩后，会在这里生成修行笔记。</Text>
             </View>
-          )}
-        </GlassCard>
+          </Pressable>
+        )) : (
+          <GlassCard style={styles.emptyHistoryCard}>
+            <Text style={styles.emptyHistoryTitle}>这一天还没有记录</Text>
+            <Text style={styles.emptyHistoryText}>完成一次站桩后，会在这里生成修行笔记。</Text>
+          </GlassCard>
+        )}
       </ScrollView>
 
       <BottomTabs bottom={insetsBottom} active="calendar" onSelect={onSelectTab} />

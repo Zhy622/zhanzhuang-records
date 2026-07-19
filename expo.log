@@ -55,3 +55,189 @@ Android Bundled 6062ms index.ts (1 module)
 Android Bundled 598ms index.ts (1 module)
 Android Bundled 70ms index.ts (1 module)
 Android Bundled 61ms index.ts (1 module)
+Android Bundled 10417ms index.ts (1 module)
+Android Bundled 6866ms index.ts (1 module)
+Android Bundled 24110ms index.ts (1 module)
+Android Bundled 6309ms index.ts (1 module)
+Android Bundled 644ms index.ts (1 module)
+Android Bundled 93ms index.ts (1 module)
+Android Bundling failed 120ms index.ts (1 module)
+ ERROR  SyntaxError: D:\站桩APP\zhan-zhuang-mvp\src\screens\home-screen.tsx: Expected corresponding JSX closing tag for <Text>. (46:8)
+
+  44 |           <Text style={styles.homeHeadline}>今日，静静站一会儿</Text>
+  45 |           <Text style={styles.homeQuote}>放松肩颈，脚下生�?/Text>
+> 46 |         </View>
+     |         ^
+  47 |
+  48 |         <View style={styles.statusSection}>
+  49 |           <View style={styles.statusAura} />
+    at constructor (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:365:19)
+    at TypeScriptParserMixin.raise (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:6616:19)
+    at TypeScriptParserMixin.jsxParseElementAt (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4739:16)
+    at TypeScriptParserMixin.jsxParseElementAt (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4710:32)
+    at TypeScriptParserMixin.jsxParseElementAt (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4710:32)
+    at TypeScriptParserMixin.jsxParseElementAt (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4710:32)
+    at TypeScriptParserMixin.jsxParseElement (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4761:17)
+    at TypeScriptParserMixin.parseExprAtom (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4771:19)
+    at TypeScriptParserMixin.parseExprSubscripts (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11098:23)
+    at TypeScriptParserMixin.parseUpdate (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11083:21)
+    at TypeScriptParserMixin.parseMaybeUnary (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11063:23)
+    at TypeScriptParserMixin.parseMaybeUnary (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9854:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10916:61)
+    at TypeScriptParserMixin.parseExprOps (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10921:23)
+    at TypeScriptParserMixin.parseMaybeConditional (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10898:23)
+    at TypeScriptParserMixin.parseMaybeAssign (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10848:21)
+    at D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9792:39
+    at TypeScriptParserMixin.tryParse (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:6924:20)
+    at TypeScriptParserMixin.parseMaybeAssign (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9792:18)
+    at D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10817:39
+    at TypeScriptParserMixin.allowInAnd (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12443:12)
+    at TypeScriptParserMixin.parseMaybeAssignAllowIn (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10817:17)
+    at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12510:17)
+    at TypeScriptParserMixin.parseParenAndDistinguishExpression (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11692:28)
+    at TypeScriptParserMixin.parseExprAtom (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11348:23)
+    at TypeScriptParserMixin.parseExprAtom (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:4776:20)
+    at TypeScriptParserMixin.parseExprSubscripts (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11098:23)
+    at TypeScriptParserMixin.parseUpdate (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11083:21)
+    at TypeScriptParserMixin.parseMaybeUnary (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:11063:23)
+    at TypeScriptParserMixin.parseMaybeUnary (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9854:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10916:61)
+    at TypeScriptParserMixin.parseExprOps (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10921:23)
+    at TypeScriptParserMixin.parseMaybeConditional (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10898:23)
+    at TypeScriptParserMixin.parseMaybeAssign (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10848:21)
+    at TypeScriptParserMixin.parseMaybeAssign (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9803:20)
+    at TypeScriptParserMixin.parseExpressionBase (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10801:23)
+    at D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10797:39
+    at TypeScriptParserMixin.allowInAnd (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12438:16)
+    at TypeScriptParserMixin.parseExpression (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:10797:17)
+    at TypeScriptParserMixin.parseReturnStatement (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:13159:28)
+    at TypeScriptParserMixin.parseStatementContent (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12815:21)
+    at TypeScriptParserMixin.parseStatementContent (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9525:18)
+    at TypeScriptParserMixin.parseStatementLike (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12784:17)
+    at TypeScriptParserMixin.parseStatementListItem (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12764:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:13333:61)
+    at TypeScriptParserMixin.parseBlockBody (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:13326:10)
+    at TypeScriptParserMixin.parseBlock (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:13314:10)
+    at TypeScriptParserMixin.parseFunctionBody (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12117:24)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:12103:10)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (D:\站桩APP\zhan-zhuang-mvp\node_modules\@babel\parser\lib\index.js:9189:18)
+Android Bundled 205ms index.ts (1 module)
+Android Bundled 143ms index.ts (1 module)
+Android Bundled 53ms index.ts (1 module)
+Android Bundled 89ms index.ts (1 module)
+Android Bundling failed 119679ms index.ts (1 module)
+Unable to resolve "./setNotificationChannelAsync" from "node_modules\expo-notifications\build\index.js"
+[0m [90m 17 |[39m [36mexport[39m { getNotificationChannelsAsync } [36mfrom[39m [32m'./getNotificationChannelsAsync'[39m[33m;[39m
+ [90m 18 |[39m [36mexport[39m { getNotificationChannelAsync } [36mfrom[39m [32m'./getNotificationChannelAsync'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 19 |[39m [36mexport[39m { setNotificationChannelAsync } [36mfrom[39m [32m'./setNotificationChannelAsync'[39m[33m;[39m
+ [90m    |[39m                                              [31m[1m^[22m[39m
+ [90m 20 |[39m [36mexport[39m { deleteNotificationChannelAsync } [36mfrom[39m [32m'./deleteNotificationChannelAsync'[39m[33m;[39m
+ [90m 21 |[39m [36mexport[39m { getNotificationChannelGroupsAsync } [36mfrom[39m [32m'./getNotificationChannelGroupsAsync'[39m[33m;[39m
+ [90m 22 |[39m [36mexport[39m { getNotificationChannelGroupAsync } [36mfrom[39m [32m'./getNotificationChannelGroupAsync'[39m[33m;[39m[0m
+
+Import stack:
+
+ node_modules\expo-notifications\build\index.js
+ | import "./setNotificationChannelAsync"
+
+ src\screens\profile-screen.tsx
+ | import "expo-notifications"
+
+ src\app-root.tsx
+ | import "./screens/profile-screen"
+
+ App.tsx
+ | import "./src/app-root"
+
+ index.ts
+ | import "./App"
+
+ 
+ | import "./index"
+
+Android Bundling failed 18549ms index.ts (1 module)
+Unable to resolve "./setNotificationChannelAsync" from "node_modules\expo-notifications\build\index.js"
+[0m [90m 17 |[39m [36mexport[39m { getNotificationChannelsAsync } [36mfrom[39m [32m'./getNotificationChannelsAsync'[39m[33m;[39m
+ [90m 18 |[39m [36mexport[39m { getNotificationChannelAsync } [36mfrom[39m [32m'./getNotificationChannelAsync'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 19 |[39m [36mexport[39m { setNotificationChannelAsync } [36mfrom[39m [32m'./setNotificationChannelAsync'[39m[33m;[39m
+ [90m    |[39m                                              [31m[1m^[22m[39m
+ [90m 20 |[39m [36mexport[39m { deleteNotificationChannelAsync } [36mfrom[39m [32m'./deleteNotificationChannelAsync'[39m[33m;[39m
+ [90m 21 |[39m [36mexport[39m { getNotificationChannelGroupsAsync } [36mfrom[39m [32m'./getNotificationChannelGroupsAsync'[39m[33m;[39m
+ [90m 22 |[39m [36mexport[39m { getNotificationChannelGroupAsync } [36mfrom[39m [32m'./getNotificationChannelGroupAsync'[39m[33m;[39m[0m
+
+Import stack:
+
+ node_modules\expo-notifications\build\index.js
+ | import "./setNotificationChannelAsync"
+
+ src\screens\profile-screen.tsx
+ | import "expo-notifications"
+
+ src\app-root.tsx
+ | import "./screens/profile-screen"
+
+ App.tsx
+ | import "./src/app-root"
+
+ index.ts
+ | import "./App"
+
+ 
+ | import "./index.ts"
+
+Android Bundled 28911ms index.ts (1 module)
+Android Bundled 44ms index.ts (1 module)
+Android Bundled 47ms index.ts (1 module)
+ ERROR  Functions are not valid as a React child. This may happen if you return onBack instead of <onBack /> from render. Or maybe you meant to call this function rather than return it.
+  <Fragment>{onBack}</Fragment>
+ ERROR  Text strings must be rendered within a <Text> component.
+ ERROR  Text strings must be rendered within a <Text> component.
+Android Bundled 49ms index.ts (1 module)
+Android Bundled 27277ms index.ts (1 module)
+Android Bundled 1079ms index.ts (1 module)
+Android Bundled 50ms index.ts (1 module)
+ ERROR  [TypeError: Cannot convert undefined value to object]
+Unable to resolve "@expo/log-box/utils" from "node_modules\expo\src\async-require\buildErrors.ts"
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m { withoutANSIColorStyles } [36mfrom[39m [32m'@expo/log-box/utils'[39m[33m;[39m
+ [90m   |[39m                                         [31m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mexport[39m [36mclass[39m [33mHMRMetroBuildError[39m [36mextends[39m [33mError[39m {
+ [90m 4 |[39m   [36mpublic[39m originalMessage[33m:[39m string[33m;[39m[0m
+
+Import stack (2000):
+
+ node_modules\expo\src\async-require\buildErrors.ts
+ | import "@expo/log-box/utils"
+
+ node_modules\expo\src\async-require\hmrUtils.native.ts
+ | import "./buildErrors"
+
+ node_modules\expo\src\async-require\hmr.ts
+ | import "./hmrUtils"
+
+ node_modules\expo\src\async-require\loadBundle.ts
+ | import "./hmr"
+
+ node_modules\expo\src\async-require\buildAsyncRequire.ts
+ | import "./loadBundle"
+
+ node_modules\expo\src\async-require\index.ts
+ | import "./buildAsyncRequire"
+
+ node_modules\expo\src\Expo.fx.tsx
+ | import "./async-require"
+
+ node_modules\expo\src\Expo.ts
+ | import "./Expo.fx"
+
+ index.ts
+ | import "expo"
+
+ 
+ | import "./index.ts"
+
+Android Bundled 302ms index.ts (1 module)
+Android Bundled 2100ms index.ts (1 module)
+Android Bundled 2770ms index.ts (1 module)
+Android Bundled 76ms index.ts (1 module)
+Android Bundled 1141ms index.ts (1 module)

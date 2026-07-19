@@ -1,7 +1,7 @@
-import { Bell, BookOpenText, Flame, Leaf, Menu, Play } from 'lucide-react-native';
+import { BookOpenText, Flame, Leaf, Play } from 'lucide-react-native';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { BottomTabs, GlassCard, TopBar } from '../components/ui';
+import { BottomTabs, GlassCard } from '../components/ui';
 import { colors } from '../constants/theme';
 import { styles } from '../styles';
 import type { RecordItem } from '../types/record';
@@ -15,6 +15,7 @@ export function HomeScreen({
   todaySeconds,
   totalSeconds,
   onStart,
+  onOpenLatest,
   onSelectTab,
 }: {
   insetsTop: number;
@@ -25,20 +26,14 @@ export function HomeScreen({
   todaySeconds: number;
   totalSeconds: number;
   onStart: () => void;
-  onSelectTab: (tab: 'home' | 'calendar') => void;
+  onOpenLatest: () => void;
+  onSelectTab: (tab: 'home' | 'calendar' | 'stats' | 'profile') => void;
 }) {
   const totalMinutes = Math.round(totalSeconds / 60);
   const todayMinutes = Math.round(todaySeconds / 60);
 
   return (
     <View style={styles.screen}>
-      <TopBar
-        top={insetsTop}
-        title="Zhan Zhuang"
-        left={<Menu color={colors.primary} size={24} strokeWidth={1.8} />}
-        right={<Bell color={colors.primary} size={22} strokeWidth={1.8} />}
-      />
-
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.homeScroll, { paddingBottom: 120 + insetsBottom }]}>
         <View style={styles.greeting}>
           <Text style={styles.homeHeadline}>今日，静静站一会儿</Text>
@@ -90,7 +85,9 @@ export function HomeScreen({
           <Text style={styles.previewText}>
             {latestRecord?.note || '“呼吸渐渐沉稳，杂念少了一些。双膝微弯时，能感觉到一股暖意从涌泉穴升起...”'}
           </Text>
-          <Text style={styles.readMore}>阅读全部  →</Text>
+          <Pressable onPress={onOpenLatest} hitSlop={8} style={({ pressed }) => pressed && styles.pressed}>
+            <Text style={styles.readMore}>阅读全部  →</Text>
+          </Pressable>
         </GlassCard>
       </ScrollView>
 
