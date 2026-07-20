@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { BackHandler, Platform, StatusBar, View } from 'react-native';
+import { Alert, BackHandler, Platform, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { api, type AuthSession } from './api/client';
 import { postures } from './constants/options';
 import { colors } from './constants/theme';
 import { AuthScreen } from './screens/auth-screen';
@@ -12,14 +13,27 @@ import { ProfileScreen } from './screens/profile-screen';
 import { RecordScreen } from './screens/record-screen';
 import { StatsScreen } from './screens/stats-screen';
 import { TimerScreen } from './screens/timer-screen';
-import { deleteRecord, initDatabase, insertRecord, listRecords } from './storage/database';
+import { deleteRecord, getSetting, initDatabase, insertRecord, listRecords, replaceRecords, setSetting } from './storage/database';
 import { styles } from './styles';
 import type { NewRecordInput, RecordItem, Screen } from './types/record';
 import { toDateKey } from './utils/time';
 
+const AUTH_SESSION_KEY = 'auth_session';
+const DEFAULT_PROFILE_NAME = '修行者 默白';
+
+const parseAuthSession = (value: string) => {
+  try {
+    const session = JSON.parse(value);
+    return typeof session?.token === 'string' && typeof session?.user?.phone === 'string' ? (session as AuthSession) : null;
+  } catch {
+    return null;
+  }
+};
+
 export function ZhanZhuangApp() {
   const [screen, setScreen] = useState<Screen>('login');
-  const [profileName, setProfileName] = useState('修行者 默白');
+  const [profileName, setProfileName] = useState(DEFAULT_PROFILE_NAME);
+  const [authToken, setAuthToken] = useState('');
   const [records, setRecords] = useState<RecordItem[]>([]);
   const [selectedPosture, setSelectedPosture] = useState(postures[1]);
   const [elapsed, setElapsed] = useState(0);
@@ -36,11 +50,25 @@ export function ZhanZhuangApp() {
   useEffect(() => {
     let mounted = true;
     initDatabase()
-      .then(listRecords)
-      .then((items) => {
-        if (mounted) setRecords(items);
+      .then(async () => {
+        const [items, savedSession] = await Promise.all([listRecords(), getSetting(AUTH_SESSION_KEY)]);
+        const session = parseAuthSession(savedSession);
+        if (!mounted) return;
+        setRecords(items);
+        if (session) {
+          const [{ user }, remoteRecords] = await Promise.all([api.me(session.token), api.listRecords(session.token)]);
+          if (!mounted) return;
+          setAuthToken(session.token);
+          setProfileName(user.name || DEFAULT_PROFILE_NAME);
+          setRecords(remoteRecords);
+          await replaceRecords(remoteRecords);
+          setScreen('home');
+        }
       })
-      .catch(console.error);
+      .catch(async (error) => {
+        console.error(error);
+        await setSetting(AUTH_SESSION_KEY, '');
+      });
     return () => {
       mounted = false;
     };
@@ -113,52 +141,75 @@ export function ZhanZhuangApp() {
   };
 
   const saveRecord = async (record: NewRecordInput) => {
+    if (!authToken) {
+      setScreen('login');
+      return;
+    }
     const createdAt = new Date();
-    const savedRecord: RecordItem = {
-      ...record,
-      id: String(Date.now()),
-      date: toDateKey(createdAt),
-      startTime: sessionStartedAt.toISOString(),
-      endTime: createdAt.toISOString(),
-      createdAt,
-    };
-
-    setRecords((items) => [savedRecord, ...items]);
-    await insertRecord(savedRecord);
-    setScreen('home');
+    try {
+      const savedRecord = await api.createRecord(authToken, record, sessionStartedAt, createdAt);
+      setRecords((items) => [savedRecord, ...items]);
+      await insertRecord(savedRecord);
+      setScreen('home');
+    } catch (error) {
+      Alert.alert('保存失败', error instanceof Error ? error.message : '请稍后再试');
+    }
   };
 
   const updateRecord = async (record: NewRecordInput) => {
-    if (!selectedRecord) return;
-    const updatedRecord: RecordItem = { ...selectedRecord, ...record };
-
-    setRecords((items) => items.map((item) => (item.id === updatedRecord.id ? updatedRecord : item)));
-    await insertRecord(updatedRecord);
-    setScreen('calendar');
+    if (!selectedRecord || !authToken) return;
+    try {
+      const updatedRecord = await api.updateRecord(authToken, selectedRecord, record);
+      setRecords((items) => items.map((item) => (item.id === updatedRecord.id ? updatedRecord : item)));
+      await insertRecord(updatedRecord);
+      setScreen('calendar');
+    } catch (error) {
+      Alert.alert('保存失败', error instanceof Error ? error.message : '请稍后再试');
+    }
   };
 
   const removeRecord = async () => {
-    if (!selectedRecord) return;
-
-    setRecords((items) => items.filter((item) => item.id !== selectedRecord.id));
-    await deleteRecord(selectedRecord.id);
-    setSelectedRecordId(null);
-    setScreen('calendar');
-  };
-  const enterApp = (name?: string) => {
-    setRecords([]);
-    setSelectedRecordId(null);
-    if (name) {
-      setProfileName(name);
-      setScreen('home');
-      return;
+    if (!selectedRecord || !authToken) return;
+    try {
+      await api.deleteRecord(authToken, selectedRecord.id);
+      setRecords((items) => items.filter((item) => item.id !== selectedRecord.id));
+      await deleteRecord(selectedRecord.id);
+      setSelectedRecordId(null);
+      setScreen('calendar');
+    } catch (error) {
+      Alert.alert('删除失败', error instanceof Error ? error.message : '请稍后再试');
     }
-    setProfileName('修行者 默白');
+  };
+  const enterApp = async (session: AuthSession) => {
+    setSelectedRecordId(null);
+    setAuthToken(session.token);
+    setProfileName(session.user.name || DEFAULT_PROFILE_NAME);
+    await setSetting(AUTH_SESSION_KEY, JSON.stringify(session));
+    const remoteRecords = await api.listRecords(session.token);
+    setRecords(remoteRecords);
+    await replaceRecords(remoteRecords);
     setScreen('home');
   };
-  const logout = () => {
-    setRecords([]);
+  const login = async (name: string, phone: string, password: string) => {
+    try {
+      await enterApp(await api.login(phone, password));
+    } catch (error) {
+      return error instanceof Error ? error.message : '登录失败，请稍后再试';
+    }
+  };
+  const register = async (name: string, phone: string, password: string) => {
+    try {
+      await enterApp(await api.register(name || DEFAULT_PROFILE_NAME, phone, password));
+    } catch (error) {
+      return error instanceof Error ? error.message : '注册失败，请稍后再试';
+    }
+  };
+  const logout = async () => {
     setSelectedRecordId(null);
+    if (authToken) await api.logout(authToken).catch(console.error);
+    setAuthToken('');
+    setRecords([]);
+    await setSetting(AUTH_SESSION_KEY, '');
     setScreen('login');
   };
   const leaveTimer = () => {
@@ -203,7 +254,7 @@ export function ZhanZhuangApp() {
           mode="login"
           insetsTop={insets.top}
           insetsBottom={insets.bottom}
-          onSubmit={enterApp}
+          onSubmit={login}
           onSwitchMode={() => setScreen('register')}
         />
       )}
@@ -212,7 +263,7 @@ export function ZhanZhuangApp() {
           mode="register"
           insetsTop={insets.top}
           insetsBottom={insets.bottom}
-          onSubmit={enterApp}
+          onSubmit={register}
           onSwitchMode={() => setScreen('login')}
         />
       )}

@@ -129,6 +129,21 @@ export const styles = StyleSheet.create({
     height: 52,
     paddingHorizontal: 16,
   },
+  authError: {
+    color: '#c33b2f',
+    fontFamily: 'Manrope_400Regular',
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 6,
+  },
+  authSubmitError: {
+    color: '#c33b2f',
+    fontFamily: 'Manrope_400Regular',
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 2,
+    textAlign: 'center',
+  },
   authButton: {
     alignItems: 'center',
     backgroundColor: colors.primary,

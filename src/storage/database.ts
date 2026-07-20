@@ -114,6 +114,43 @@ export const deleteRecord = async (id: string) => {
   await db.runAsync('DELETE FROM records WHERE id = ?', [id]);
 };
 
+export const replaceRecords = async (records: RecordItem[]) => {
+  const db = await dbPromise;
+  await db.withTransactionAsync(async () => {
+    await db.runAsync('DELETE FROM records');
+    for (const record of records) {
+      await db.runAsync(
+        `INSERT OR REPLACE INTO records (
+          id,
+          date,
+          start_time,
+          end_time,
+          duration,
+          posture,
+          mood,
+          sensations,
+          note,
+          tags,
+          created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          record.id,
+          record.date,
+          record.startTime,
+          record.endTime,
+          record.duration,
+          record.posture,
+          record.mood,
+          JSON.stringify(record.sensations),
+          record.note,
+          JSON.stringify(record.tags),
+          record.createdAt.toISOString(),
+        ],
+      );
+    }
+  });
+};
+
 export const getSetting = async (key: string) => {
   const db = await dbPromise;
   const row = await db.getFirstAsync<{ value: string }>('SELECT value FROM settings WHERE key = ?', [key]);

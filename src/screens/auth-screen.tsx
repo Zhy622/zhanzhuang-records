@@ -5,6 +5,9 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput,
 import { colors } from '../constants/theme';
 import { styles } from '../styles';
 
+const isValidPhone = (value: string) => /^1[3-9]\d{9}$/.test(value);
+const cleanPhone = (value: string) => value.replace(/\D/g, '').slice(0, 11);
+
 export function AuthScreen({
   mode,
   insetsTop,
@@ -15,14 +18,24 @@ export function AuthScreen({
   mode: 'login' | 'register';
   insetsTop: number;
   insetsBottom: number;
-  onSubmit: (name: string) => void;
+  onSubmit: (name: string, phone: string, password: string) => Promise<string | void>;
   onSwitchMode: () => void;
 }) {
   const register = mode === 'register';
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const disabled = !phone.trim() || !password.trim() || (register && !name.trim());
+  const [submitError, setSubmitError] = useState('');
+  const phoneError = phone.length > 0 && !isValidPhone(phone);
+  const disabled = !isValidPhone(phone) || !password.trim() || (register && !name.trim());
+  const updatePhone = (value: string) => {
+    setPhone(cleanPhone(value));
+    setSubmitError('');
+  };
+  const submit = async () => {
+    const message = await onSubmit(register ? name.trim() : '', phone, password);
+    setSubmitError(message || '');
+  };
 
   return (
     <View style={styles.screen}>
@@ -55,7 +68,7 @@ export function AuthScreen({
                 <UserRound color={colors.outline} size={16} strokeWidth={1.8} />
                 <Text style={styles.authFieldLabel}>昵称</Text>
               </View>
-              <TextInput value={name} onChangeText={setName} style={styles.authInput} placeholder="例如：默白" placeholderTextColor="rgba(115,121,111,0.45)" />
+              <TextInput value={name} onChangeText={(value) => { setName(value); setSubmitError(''); }} style={styles.authInput} placeholder="例如：默白" placeholderTextColor="rgba(115,121,111,0.45)" />
             </View>
           )}
 
@@ -64,7 +77,8 @@ export function AuthScreen({
               <Phone color={colors.outline} size={16} strokeWidth={1.8} />
               <Text style={styles.authFieldLabel}>手机号</Text>
             </View>
-            <TextInput value={phone} onChangeText={setPhone} style={styles.authInput} keyboardType="phone-pad" placeholder="请输入手机号" placeholderTextColor="rgba(115,121,111,0.45)" />
+            <TextInput value={phone} onChangeText={updatePhone} style={styles.authInput} keyboardType="phone-pad" maxLength={11} placeholder="请输入手机号" placeholderTextColor="rgba(115,121,111,0.45)" />
+            {phoneError && <Text style={styles.authError}>请输入正确的 11 位手机号</Text>}
           </View>
 
           <View style={styles.authField}>
@@ -72,10 +86,12 @@ export function AuthScreen({
               <LockKeyhole color={colors.outline} size={16} strokeWidth={1.8} />
               <Text style={styles.authFieldLabel}>密码</Text>
             </View>
-            <TextInput value={password} onChangeText={setPassword} style={styles.authInput} secureTextEntry placeholder="请输入密码" placeholderTextColor="rgba(115,121,111,0.45)" />
+            <TextInput value={password} onChangeText={(value) => { setPassword(value); setSubmitError(''); }} style={styles.authInput} secureTextEntry placeholder="请输入密码" placeholderTextColor="rgba(115,121,111,0.45)" />
           </View>
 
-          <Pressable disabled={disabled} onPress={() => onSubmit(register ? name.trim() : '')} style={({ pressed }) => [styles.authButton, disabled && styles.disabled, pressed && styles.pressed]}>
+          {submitError && <Text style={styles.authSubmitError}>{submitError}</Text>}
+
+          <Pressable disabled={disabled} onPress={submit} style={({ pressed }) => [styles.authButton, disabled && styles.disabled, pressed && styles.pressed]}>
             <Text style={styles.authButtonText}>{register ? '注册并进入' : '登录'}</Text>
           </Pressable>
 
@@ -87,7 +103,6 @@ export function AuthScreen({
           </View>
         </View>
 
-        <Text style={styles.authHint}>MVP 阶段仅保留本地登录流程，后续接入正式账号系统。</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

@@ -126,3 +126,4 @@ Web  LOG  Running application "main" with appParams:
  {"hydrate": undefined, "rootTag": "#root"} 
 Development-level warnings: ON.
 Performance optimizations: OFF.
+Android Bundled 195334ms index.ts (1 module)
